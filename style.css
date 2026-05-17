@@ -1,0 +1,80 @@
+/* Фон страницы в RGB для всех страниц */
+body {
+    background: rgb(240, 235, 225);
+}
+
+/* Меню: убрать маркеры и расположить пункты в строку */
+header ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: 20px;
+}
+
+header ul li a {
+    color: rgb(68, 40, 19);
+    font-size: 18px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+header h1 {
+    color: rgb(68, 40, 19);
+}
+
+/* Стили для ссылок на товары в каталоге */
+main a {
+    color: rgb(68, 40, 19);
+    font-size: 18px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+main a:hover {
+    text-decoration: underline;
+}
+
+/* Стили для подробного описания товара в item.html */
+main p {
+    color: rgb(68, 40, 19);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    text-align: left;
+}
+
+main h2 {
+    color: rgb(68, 40, 19);
+}
+
+/* Стили для заголовков h3 */
+h3 {
+    color: rgb(255, 245, 235);
+    font-size: 18px;
+    font-weight: bold;
+    background: rgb(68, 40, 19);
+    padding: 5px 5px;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+/* Стили для списка характеристик товара */
+main ul {
+    list-style: none;
+    padding: 15px 20px;
+    background: rgb(225, 215, 200);
+    border-radius: 8px;
+    margin: 10px 0;
+}
+
+main ul li {
+    padding: 1px 0 4px 30px;
+    background: url('images/coffee-bean.png') left center no-repeat;
+    background-size: 25px 25px;
+    font-size: 15px;
+    color: rgb(60, 45, 35);
+}
+
+main ul li:last-child {
+    border-bottom: none;
+}
