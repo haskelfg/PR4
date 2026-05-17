@@ -7,165 +7,175 @@ const products = [
     {id: 5, name: "Индийская Робуста", price: 520, category: "робуста", img: "images/coffee5.png", desc: "Шоколадные нотки"}
 ];
 
-// 2. КОРЗИНА (пустой массив, куда будем добавлять товары)
+// 2. КОРЗИНА
 let cart = [];
+
+// ============================================
+// LOCAL STORAGE
+// ============================================
+
+// Сохранить корзину
+function saveCartToLocalStorage() {
+    localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+// Загрузить корзину
+function loadCartFromLocalStorage() {
+    const savedCart = localStorage.getItem("cart");
+
+    if (savedCart) {
+        cart = JSON.parse(savedCart);
+    }
+}
 
 // ============================================
 // ФУНКЦИИ ДЛЯ РАБОТЫ С КОРЗИНОЙ
 // ============================================
 
-// Функция 1: Добавить товар в корзину
+// Добавить товар
 function addToCart(productId) {
-    // Находим товар по его ID
     let product = products.find(function(p) {
         return p.id == productId;
     });
-    
-    // Добавляем товар в корзину
+
     cart.push(product);
-    
-    // Обновляем отображение корзины на странице
+
+    // Сохраняем корзину
+    saveCartToLocalStorage();
+
     renderCart();
 }
 
-// Функция 2: Удалить товар из корзины
+// Удалить товар
 function removeFromCart(index) {
-    // Удаляем товар из корзины по его номеру (индексу)
     cart.splice(index, 1);
-    
-    // Обновляем отображение корзины
+
+    // Сохраняем корзину
+    saveCartToLocalStorage();
+
     renderCart();
 }
 
-// Функция 3: Посчитать общую сумму
+// Посчитать сумму
 function calculateTotal() {
     let total = 0;
-    
-    // Проходим по всем товарам в корзине
+
     for (let i = 0; i < cart.length; i++) {
-        total = total + cart[i].price; // Добавляем цену каждого товара
+        total = total + cart[i].price;
     }
-    
-    return total; // Возвращаем общую сумму
+
+    return total;
 }
 
-// Функция 4: Очистить корзину
+// Очистить корзину
 function clearCart() {
-    // Проверяем: пустая корзина или нет
     if (cart.length == 0) {
-        alert("Корзина пуста!"); // Всплывающее окно
+        alert("Корзина пуста!");
     } else {
-        cart = []; // Очищаем корзину
-        renderCart(); // Обновляем отображение
+        cart = [];
+
+        // Сохраняем пустую корзину
+        saveCartToLocalStorage();
+
+        renderCart();
     }
 }
 
-// Функция 5: Оплатить покупку
+// Оплата
 function checkout() {
-    // Проверяем: пустая корзина или нет
     if (cart.length == 0) {
-        alert("Корзина пуста! Добавьте товары перед оплатой."); // Сообщение об ошибке
+        alert("Корзина пуста! Добавьте товары перед оплатой.");
     } else {
-        // Считаем общую сумму
         let total = calculateTotal();
-        
-        // Показываем сообщение об успешной оплате
+
         alert("Покупка на сумму " + total + " руб. прошла успешно! Спасибо за заказ!");
-        
-        // Очищаем корзину
+
         cart = [];
-        
-        // Обновляем отображение корзины
+
+        // Сохраняем пустую корзину
+        saveCartToLocalStorage();
+
         renderCart();
     }
 }
 
 // ============================================
-// ФУНКЦИЯ ОТРИСОВКИ КОРЗИНЫ (показывает товары на странице)
+// ОТРИСОВКА КОРЗИНЫ
 // ============================================
 
 function renderCart() {
-    // Находим контейнер для списка товаров в корзине
     let itemsContainer = document.getElementById("cart-items");
-    
-    // Если контейнер не найден, выходим из функции
+
     if (!itemsContainer) return;
-    
-    // Проверяем: корзина пустая?
+
     if (cart.length == 0) {
-        // Если пустая - показываем надпись
         itemsContainer.innerHTML = '<p>Корзина пуста</p>';
     } else {
-        // Если не пустая - создаем HTML для каждого товара
         let html = "";
-        
+
         for (let i = 0; i < cart.length; i++) {
             let item = cart[i];
-            html = html + '<div>' + item.name + ' - ' + item.price + ' руб. <button onclick="removeFromCart(' + i + ')">✖</button></div>';
+
+            html = html +
+                '<div>' +
+                item.name +
+                ' - ' +
+                item.price +
+                ' руб. <button onclick="removeFromCart(' +
+                i +
+                ')">✖</button></div>';
         }
-        
-        // Вставляем созданный HTML на страницу
+
         itemsContainer.innerHTML = html;
     }
-    
-    // Находим элемент для отображения общей суммы
+
     let totalElement = document.getElementById("cart-total");
+
     if (totalElement) {
-        totalElement.innerHTML = calculateTotal(); // Показываем сумму
+        totalElement.innerHTML = calculateTotal();
     }
-    
-    // Находим элемент для отображения количества товаров
+
     let countElement = document.getElementById("cart-count");
+
     if (countElement) {
-        countElement.innerHTML = cart.length; // Показываем количество
+        countElement.innerHTML = cart.length;
     }
 }
 
 // ============================================
-// ФУНКЦИЯ ФИЛЬТРАЦИИ ТОВАРОВ
+// ФИЛЬТРАЦИЯ
 // ============================================
 
 function filterProducts(category) {
-    // Находим все карточки товаров
     let allCards = document.querySelectorAll(".product-card");
-    
-    // Если выбрали "Все товары"
+
     if (category == "all") {
-        // Показываем все карточки
         for (let i = 0; i < allCards.length; i++) {
             allCards[i].style.display = "block";
         }
     }
-    
-    // Если выбрали "Арабика"
+
     if (category == "арабика") {
         for (let i = 0; i < allCards.length; i++) {
             let card = allCards[i];
             let cardCategory = card.getAttribute("data-category");
-            
-            // Если категория товара = арабика - показываем
+
             if (cardCategory == "арабика") {
                 card.style.display = "block";
-            } 
-            // Если не арабика - скрываем
-            else {
+            } else {
                 card.style.display = "none";
             }
         }
     }
-    
-    // Если выбрали "Робуста"
+
     if (category == "робуста") {
         for (let i = 0; i < allCards.length; i++) {
             let card = allCards[i];
             let cardCategory = card.getAttribute("data-category");
-            
-            // Если категория товара = робуста - показываем
+
             if (cardCategory == "робуста") {
                 card.style.display = "block";
-            } 
-            // Если не робуста - скрываем
-            else {
+            } else {
                 card.style.display = "none";
             }
         }
@@ -173,22 +183,19 @@ function filterProducts(category) {
 }
 
 // ============================================
-// ФУНКЦИЯ СОЗДАНИЯ КАРТОЧЕК ТОВАРОВ
+// СОЗДАНИЕ КАРТОЧЕК
 // ============================================
 
 function renderProducts() {
-    // Находим контейнер для товаров на странице
     let container = document.getElementById("products-container");
-    
-    // Если контейнер не найден, выходим
+
     if (!container) return;
-    
-    // Создаем HTML для всех товаров
+
     let html = "";
-    
+
     for (let i = 0; i < products.length; i++) {
         let p = products[i];
-        
+
         html = html + `
             <div class="product-card" data-category="${p.category}" data-id="${p.id}">
                 <img src="${p.img}" width="150"><br>
@@ -199,23 +206,21 @@ function renderProducts() {
             </div>
         `;
     }
-    
-    // Вставляем все карточки на страницу
+
     container.innerHTML = html;
 }
 
 // ============================================
-// ФУНКЦИЯ ДОБАВЛЕНИЯ КОРЗИНЫ И ФИЛЬТРА НА СТРАНИЦУ
+// INIT
 // ============================================
 
 function init() {
-    // Проверяем: есть ли на странице контейнер для товаров?
     if (document.getElementById("products-container")) {
-        
-        // 1. Создаем карточки товаров
+
+        // Карточки товаров
         renderProducts();
-        
-        // 2. Создаем блок фильтрации
+
+        // Фильтр
         let filterHTML = `
             <div id="filter">
                 <button onclick="filterProducts('all')">Все товары</button>
@@ -223,30 +228,32 @@ function init() {
                 <button onclick="filterProducts('робуста')">Робуста</button>
             </div>
         `;
-        
-        // 3. Создаем блок корзины
+
+        // Корзина
         let cartHTML = `
             <div id="cart">
                 <h3>Корзина (<span id="cart-count">0</span>)</h3>
                 <div id="cart-items"></div>
-                <b>Итого: <span id="cart-total">0</b> руб.
+                <b>Итого: <span id="cart-total">0</span></b> руб.
                 <br>
                 <button onclick="clearCart()">Очистить корзину</button>
                 <button onclick="checkout()">Оплатить</button>
             </div>
         `;
-        
-        // 4. Добавляем фильтр и корзину на страницу (в конец тега main)
+
         document.querySelector("main").insertAdjacentHTML("beforeend", filterHTML);
         document.querySelector("main").insertAdjacentHTML("beforeend", cartHTML);
-        
-        // 5. Показываем корзину (изначально пустую)
+
+        // Загружаем корзину
+        loadCartFromLocalStorage();
+
+        // Показываем корзину
         renderCart();
     }
 }
 
 // ============================================
-// ЗАПУСК: когда страница загрузится, выполнить функцию init
+// ЗАПУСК
 // ============================================
 
 document.addEventListener("DOMContentLoaded", init);
